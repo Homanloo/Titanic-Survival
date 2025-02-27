@@ -20,6 +20,8 @@ In this section, the overall structure of the dataset is examined. The process c
 
 Below is an example for the survival rate based on age:
 
+![image](https://github.com/user-attachments/assets/14bad31a-56a1-4f8a-ba36-2df3a4161d0c)
+
 ## Model Selection
 In this section, several different models are selected, trained, and their performance is measured using cross validation and training curves.
 Below is a list of the models:
@@ -36,6 +38,8 @@ Below is a list of the models:
 For each model, learning curve is plotted. A few of the models are then selected to be fine-tunned, using Randomized Search and Grid Search for certain hyperparameters.
 
 This is the performance of the selected models:
+
+![image](https://github.com/user-attachments/assets/9339428b-4cd1-4f09-b51b-59739e0b162f)
 
 For the final measurement, all 4 models are used to predict the test set. Overall, Random Forest had the best performance in the test data set. However, the numbers may vary because of the random behavior in data splitting and model training.
 ## Sources & Useful Tools
