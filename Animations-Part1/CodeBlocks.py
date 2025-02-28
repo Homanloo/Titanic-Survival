@@ -17,7 +17,7 @@ class DefaultCode(Code):
 
 class LoadData(Scene):
     def construct(self):
-        code1 = DefaultCode(
+        code = DefaultCode(
             code="""
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -26,7 +26,26 @@ import numpy as np
 df = pd.read_csv("Data/train.csv")
 df.head()
 """)
-        self.play(Write(code1))
+        self.play(Write(code))
+        self.wait(1)
+        
+        
+        
+class Aquarel(Scene):
+    def construct(self):
+        code = DefaultCode(
+            code="""
+from aquarel import load_theme
+
+# Using the Aquarel library with some customization for the plots
+theme = load_theme("boxy_dark")
+theme.set_color(figure_background_color="#181818",
+                plot_background_color="#242424")
+theme.set_font(family="monospace", size=9)
+theme.apply_transforms()
+theme.apply()
+""")
+        self.play(Write(code))
         self.wait(1)
 
 
@@ -154,3 +173,59 @@ df["Embarked"].replace(location_dict, inplace=True)
 """)
         self.play(ReplacementTransform(code8, code9))
         self.wait(2)
+        
+        
+class OHEAndCorrMat(Scene):
+    def construct(self):
+        code1 = DefaultCode(
+            code="""
+def custome_ohe(df:pd.DataFrame, column:str, drop_original:bool=False):
+    
+    try:
+        target_column = df[column]
+        target_values = list(target_column.unique())
+        for val in target_values:
+            feature_title = f"{column}_{val}"
+            df[feature_title] = df[column].map(
+                lambda x: 1 if x == val else 0
+            )
+        if drop_original == True:
+            df.drop(columns=[column], inplace=True, errors="ignore")
+    except:
+        if column not in df.columns:
+            print(f"Column {column} does not exist in the dataframe.")
+        else:
+            print("The function is unable to one-hot-encode the column.")
+""")
+        self.play(Write(code1))
+        self.wait(1)
+
+        code2 =DefaultCode(code="""
+ohe_columns = ['Pclass', 'Sex', 'Embarked',
+               'Deck', 'AgeGroup', 'Title',
+               'Wealth']
+
+for col in ohe_columns:
+    custome_ohe(df=df, column=col, drop_original=True)        
+""")
+        self.play(ReplacementTransform(code1, code2))
+        self.wait(1)
+        
+        code3 =DefaultCode(code="""
+df_corr = df.corr()
+
+fig, ax = plt.subplots(figsize=(15, 15), dpi=300)
+corr_mat = ax.imshow(df_corr, cmap='Blues')
+plt.colorbar(corr_mat)
+features = [x for x in df_corr.columns]
+plt.xticks(range(len(df_corr)), features, rotation=90, ha='right')
+plt.yticks(range(len(df_corr)), features)
+plt.tick_params(labeltop=True)
+plt.suptitle("Correlation Matrix")
+
+plt.tight_layout()
+plt.show(fig)       
+""")
+        self.play(ReplacementTransform(code2, code3))
+        self.wait(1)
+        self.play(FadeOut(code3))
