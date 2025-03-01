@@ -3,22 +3,18 @@ from manim import *
 
 # Defining the default code block with desired values
 class DefaultCode(Code):
-    def __init__(self, file_name = None, code = None, tab_width = 3, line_spacing = 0.8, font_size = 18, font = "Monospace", 
-                 stroke_width = 0, margin = 0.3, indentation_chars = "    ", background = "window", 
-                 background_stroke_width = 1, background_stroke_color = WHITE, corner_radius = 0.2, insert_line_no = True, 
-                 line_no_from = 1, line_no_buff = 0.4, style = "native", language = "python", generate_html_file = False, 
-                 warn_missing_font = True, **kwargs):
-        
-        super().__init__(file_name, code, tab_width, line_spacing, font_size, font, stroke_width, margin, indentation_chars, 
-                         background, background_stroke_width, background_stroke_color, corner_radius, insert_line_no, 
-                         line_no_from, line_no_buff, style, language, generate_html_file, warn_missing_font, **kwargs)
+    def __init__(self, code_file = None, code_string = None, language = "python", formatter_style = "native",
+                 tab_width = 4, add_line_numbers = True, line_numbers_from = 1, background = "window",
+                 background_config = None, paragraph_config = None):
+        super().__init__(code_file, code_string, language, formatter_style, tab_width, add_line_numbers,
+                         line_numbers_from, background, background_config, paragraph_config)
 
 
 
 class LoadData(Scene):
     def construct(self):
         code = DefaultCode(
-            code="""
+            code_string="""
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -34,7 +30,7 @@ df.head()
 class Aquarel(Scene):
     def construct(self):
         code = DefaultCode(
-            code="""
+            code_string="""
 from aquarel import load_theme
 
 # Using the Aquarel library with some customization for the plots
@@ -53,7 +49,7 @@ theme.apply()
 class FeatureEngineering(Scene):
     def construct(self):
         code1 = DefaultCode(
-            code="""
+            code_string="""
 # --- Name --- #
 
 # Extracting the title
@@ -64,7 +60,7 @@ df.drop(columns=["Name"], inplace=True)
         self.wait(2)
 
         code2 = DefaultCode(
-            code="""
+            code_string="""
 # --- Name --- #
 
 common_titles = ["Mr", "Miss", "Mrs", "Master"]
@@ -77,7 +73,7 @@ df['IsTitleRare'] = df['Title'].apply(lambda x: 1 if x=="Rare" else 0)
         self.wait(2)
         
         code3 = DefaultCode(
-            code="""
+            code_string="""
 # --- Age --- #
 
 # Replacing missing age values with the average
@@ -92,7 +88,7 @@ df["AgeGroup"] = pd.cut(df["Age"], bins=age_bins, labels=age_labels)
         self.wait(2)
 
         code4 = DefaultCode(
-            code="""
+            code_string="""
 # --- SibSp & Parch --- #
 
 # Introducing a new and more meaningful feature
@@ -105,7 +101,7 @@ df['IsAlone'] = df['FamilySize'].apply(lambda x: 1 if x==1 else 0)
         self.wait(2)
         
         code5 = DefaultCode(
-            code="""
+            code_string="""
 # --- Ticket & Fare --- #
 
 # Adding the number of times a ticket was repeated to the dataframe
@@ -119,7 +115,7 @@ df["AdjustedFare"] = round(df["Fare"] / df["TicketCount"], 4)
         self.wait(2)
         
         code6 = DefaultCode(
-            code="""
+            code_string="""
 # --- Ticket & Fare --- #
 
 # Spliting the passengers to 4 groups based on their wealth
@@ -136,7 +132,7 @@ df["Wealth"] = pd.cut(df["AdjustedFare"], bins=fare_bins, labels=fare_labels)
         self.wait(2)
         
         code7 = DefaultCode(
-            code="""
+            code_string="""
 # --- Ticket & Fare --- #
 
 df['AdjustedFare'].replace(0, df['AdjustedFare'].median(), inplace=True)
@@ -146,7 +142,7 @@ df['LogFare'] = np.log(df['AdjustedFare'])
         self.wait(2)
         
         code8 = DefaultCode(
-            code="""
+            code_string="""
 # --- Cabin --- #
 
 # Extracting deck of residance for each passanger - N/A for NaN
@@ -160,7 +156,7 @@ df['HasCabin'] = df['Deck'].apply(lambda x: 0 if x=="N/A" else 1)
         self.wait(2)
         
         code9 = DefaultCode(
-            code="""
+            code_string="""
 # --- Embarked --- #
 
 # Replacing the missing embarked locations with the most frequent one
@@ -178,7 +174,7 @@ df["Embarked"].replace(location_dict, inplace=True)
 class OHEAndCorrMat(Scene):
     def construct(self):
         code1 = DefaultCode(
-            code="""
+            code_string="""
 def custome_ohe(df:pd.DataFrame, column:str, drop_original:bool=False):
     
     try:
@@ -200,7 +196,8 @@ def custome_ohe(df:pd.DataFrame, column:str, drop_original:bool=False):
         self.play(Write(code1))
         self.wait(1)
 
-        code2 =DefaultCode(code="""
+        code2 =DefaultCode(
+            code_string="""
 ohe_columns = ['Pclass', 'Sex', 'Embarked',
                'Deck', 'AgeGroup', 'Title',
                'Wealth']
@@ -211,7 +208,8 @@ for col in ohe_columns:
         self.play(ReplacementTransform(code1, code2))
         self.wait(1)
         
-        code3 =DefaultCode(code="""
+        code3 =DefaultCode(
+            code_string="""
 df_corr = df.corr()
 
 fig, ax = plt.subplots(figsize=(15, 15), dpi=300)
@@ -229,3 +227,48 @@ plt.show(fig)
         self.play(ReplacementTransform(code2, code3))
         self.wait(1)
         self.play(FadeOut(code3))
+        
+        
+class GroupPlot(Scene):
+    def construct(self):
+        code = DefaultCode(
+            code_string="""
+# A function to plot the survival rate based on the given column values
+def group_plot(df=df, column="Sex", plot_type="bar"):
+    
+    grouped_attribute = df.groupby(column, observed=False)['Survived']
+    attribute_survival_rate = grouped_attribute.mean()
+    
+    if plot_type == "bar":
+        grouped_plot = attribute_survival_rate.plot(
+            kind="bar",
+            ylabel="Chance of Survival",
+            xlabel=str(column),
+            title=str(column),
+            rot=0)
+        
+    elif plot_type == "barh":
+        grouped_plot = attribute_survival_rate.plot(
+            kind="barh",
+            xlabel="Chance of Survival",
+            ylabel=str(column),
+            title=str(column),
+            rot=0)
+    else:
+        return "Invalid"
+    
+    return plt.show(grouped_plot)
+""").scale(0.6)
+        self.play(Write(code))
+        self.wait(1)
+        
+        
+class DoubleGroupExample(Scene):
+    def construct(self):
+        code = DefaultCode(
+            code_string="""
+# Survival based on class and gender
+grouped_pclass_sex_survived = pd.DataFrame(df.groupby(['Pclass', 'Sex'])['Survived'].mean())
+""").scale(0.6)
+        self.play(Write(code))
+        self.wait(1)
