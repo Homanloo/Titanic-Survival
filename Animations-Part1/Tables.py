@@ -82,7 +82,7 @@ class Age(Scene):
             [["...", "65", "..."],
             ["...", "28", "..."]],
             col_labels=[Text("...", color=BLUE, weight=HEAVY),
-                        Text("Name", color=BLUE, weight=HEAVY),
+                        Text("Age", color=BLUE, weight=HEAVY),
                         Text("...", color=BLUE, weight=HEAVY)],
             include_outer_lines=False).scale(0.6)
     
@@ -90,7 +90,7 @@ class Age(Scene):
             [["...", "65", "senior", "..."],
             ["...", "28", "adult", "..."]],
             col_labels=[Text("...", color=BLUE, weight=HEAVY),
-                        Text("Name", color=BLUE, weight=HEAVY),
+                        Text("Age", color=BLUE, weight=HEAVY),
                         Text("AgeGroup", color=BLUE, weight=HEAVY),
                         Text("...", color=BLUE, weight=HEAVY)],
             include_outer_lines=False).scale(0.6)
