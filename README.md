@@ -1,6 +1,3 @@
-
-
-
 # Titanic Survival Prediction with ML
 A simple study of the Titanic dataset, which is considered as the Hello World of Machine Learning projects.
 The project consists of two parts:
@@ -47,4 +44,3 @@ For the final measurement, all 4 models are used to predict the test set. Overal
  - The data used in this project is originally from the [Titanic Kaggle Competition](https://www.kaggle.com/c/titanic/data). Make sure to check out and participate.
  - Many useful information, maps, and data can be found in the [Encyclopedia Titanica Website](https://www.encyclopedia-titanica.org/titanic-deckplans/d-deck.html).
  - I used [Aquarel](https://github.com/lgienapp/aquarel) to make the default matplotlib plots way more attractive in the Jupyter Notebook.
- - I used [Manim](https://www.manim.community/) to make the animations.
